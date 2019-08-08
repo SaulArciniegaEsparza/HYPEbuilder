@@ -210,20 +210,20 @@ class Model(object):
 
     def sync_geodata(self):
         if self.path:
-            filename = _os.path.join(self.path, 'geodata.txt')
+            filename = _os.path.join(self.path, 'GeoData.txt')
             if _os.path.exists(filename):
                 self.GeoData = GeoData(filename)
                 self.GeoData.filename = filename
             else:
-                print('geodata.txt does not exist in folder!')
+                print('GeoData.txt does not exist in folder!')
 
     def sync_geoclass(self):
-        filename = _os.path.join(self.path, 'geoclass.txt')
+        filename = _os.path.join(self.path, 'GeoClass.txt')
         if _os.path.exists(filename):
             self.GeoClass = file_tools.FileGeoClass(filename)
             self.GeoClass.read()
         else:
-            print('geodata.txt does not exist in folder!')
+            print('GeoClass.txt does not exist in folder!')
 
     def sync(self):
         """Reload files info, geodata, geoclass and parameters"""
