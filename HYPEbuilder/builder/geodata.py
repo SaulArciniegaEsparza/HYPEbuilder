@@ -74,15 +74,18 @@ class GeoData:
             if dtypes[i] in (float, _np.float16, _np.float32, _np.float64):
                 geodata.iloc[:, i] = geodata.iloc[:, i].round(4)
 
-        self._data = geodata  # save data
+        self.data = geodata  # save data
 
     def __repr__(self):
         return 'HYPEbuilder.GeoData'
 
     def __str__(self):
+        return str(self.data)
+
+    def info(self):
         t = "\n\nHYPEbuilder GeoData\n"
-        t += " Number of basins: {}\n".format(self._data.shape[0])
-        t += " Total area (km2): {:.3f}\n".format(self._data['area'].sum() / 1e6)
+        t += " Number of basins: {}\n".format(self.data.shape[0])
+        t += " Total area (km2): {:.3f}\n".format(self.data['area'].sum() / 1e6)
         t += "No. Header basins: {}\n".format(len(self.find_header_basins(True)))
         t += "No. Outlet basins: {}\n".format(len(self.find_outlet_basins(True)))
         return t
@@ -99,8 +102,8 @@ class GeoData:
         """
 
         # Extract subid and maindown as arrays
-        subid = self._data['subid'].values
-        maindown = self._data['maindown'].values
+        subid = self.data['subid'].values
+        maindown = self.data['maindown'].values
         # Compute downstream connectivity matrix
         connect = downstream_id(subid, maindown)
         num_basins = connect.sum(axis=0)
@@ -108,7 +111,7 @@ class GeoData:
         if only_subid:
             outdata = subid[mask]
         else:
-            outdata = self._data.loc[mask, :]
+            outdata = self.data.loc[mask, :]
         return outdata
 
     def find_outlet_basins(self, only_subid=False):
@@ -122,14 +125,14 @@ class GeoData:
         """
 
         # Extract subid and maindown as arrays
-        subid = self._data['subid'].values
-        maindown = self._data['maindown'].values
+        subid = self.data['subid'].values
+        maindown = self.data['maindown'].values
         # Find outlet basins
         mask = maindown == 0
         if only_subid:
             outdata = subid[mask]
         else:
-            outdata = self._data.loc[mask, :]
+            outdata = self.data.loc[mask, :]
         return outdata
 
     def find_allupstream_subids(self, basin, only_subid=False):
@@ -167,10 +170,10 @@ class GeoData:
         else:
             subid1 = index_numeration(
                 upstreams,
-                self._data.loc[:, 'subid'].values
+                self.data.loc[:, 'subid'].values
             )
             print(subid1)
-            outdata = self._data.iloc[subid1, :]
+            outdata = self.data.iloc[subid1, :]
         return outdata
 
     def find_alldownstream_subids(self, basin, only_subid=False):
@@ -181,8 +184,8 @@ class GeoData:
 
         # Convert input types
         basin = int(basin)
-        subid = self._data['subid'].values
-        maindown = self._data['maindown'].values
+        subid = self.data['subid'].values
+        maindown = self.data['maindown'].values
         n = subid.size  # number ob basins
         # Renumerate subids
         subid1, maindown1 = subid_numeration(subid, maindown)
@@ -199,7 +202,7 @@ class GeoData:
         if only_subid:
             outdata = subid[basins]
         else:
-            outdata = self._data.iloc[basins, :]
+            outdata = self.data.iloc[basins, :]
         return outdata
 
     def upstream_area(self, inplace=False):
@@ -213,7 +216,7 @@ class GeoData:
                        'area', 'uparea'] is returned
         """
         # Get subid
-        subid = self._data['subid'].values
+        subid = self.data['subid'].values
         n = subid.size  # number ob basins
         # Compute upstream area for each basins
         areas = _np.zeros(n)
@@ -221,9 +224,9 @@ class GeoData:
             basins_data = self.find_allupstream_subids(subid[i])
             areas[i] = basins_data['area'].sum()
         if inplace:
-            self._data['uparea'] = areas
+            self.data['uparea'] = areas
         else:
-            outdata = self._data.loc[:, ['subid', 'maindown', 'area']]
+            outdata = self.data.loc[:, ['subid', 'maindown', 'area']]
             outdata['uparea'] = areas
             return outdata
 
@@ -238,7 +241,7 @@ class GeoData:
                        'area', 'downarea'] is returned
         """
         # Get subid
-        subid = self._data['subid'].values
+        subid = self.data['subid'].values
         n = subid.size  # number ob basins
         # Compute downstream area for each basins
         areas = _np.zeros(n)
@@ -246,9 +249,9 @@ class GeoData:
             basins_data = self.find_alldownstream_subids(subid[i])
             areas[i] = basins_data['area'].sum()
         if inplace:
-            self._data['downarea'] = areas
+            self.data['downarea'] = areas
         else:
-            outdata = self._data.loc[:, ['subid', 'maindown', 'area']]
+            outdata = self.data.loc[:, ['subid', 'maindown', 'area']]
             outdata['downarea'] = areas
             return outdata
 
@@ -264,7 +267,7 @@ class GeoData:
 
         """
         # Get basin subid
-        subid = self._data['subid'].values
+        subid = self.data['subid'].values
         n = subid.size  # number ob basins
         # Count upstream basins
         count = _np.zeros(n, dtype=int)
@@ -272,9 +275,9 @@ class GeoData:
             basins_data = self.find_allupstream_subids(subid[i], True)
             count[i] = len(basins_data) - 1
         if inplace:
-            self._data['upbasins'] = count
+            self.data['upbasins'] = count
         else:
-            outdata = self._data.loc[:, ['subid', 'maindown']]
+            outdata = self.data.loc[:, ['subid', 'maindown']]
             outdata['upbasins'] = count
             return outdata
 
@@ -290,7 +293,7 @@ class GeoData:
 
         """
         # Get subid
-        subid = self._data['subid'].values
+        subid = self.data['subid'].values
         n = subid.size  # number ob basins
         # Count downstream basins
         count = _np.zeros(n, dtype=int)
@@ -298,9 +301,9 @@ class GeoData:
             basins_data = self.find_alldownstream_subids(subid[i], True)
             count[i] = len(basins_data) - 1
         if inplace:
-            self._data['downbasins'] = count
+            self.data['downbasins'] = count
         else:
-            outdata = self._data.loc[:, ['subid', 'maindown']]
+            outdata = self.data.loc[:, ['subid', 'maindown']]
             outdata['downbasins'] = count
             return outdata
 
@@ -319,10 +322,10 @@ class GeoData:
         basins_sort = _pd.concat((upbasins[~mask], upbasins[mask]))
         # Return data
         if inplace:
-            self._data = (self._data.loc[basins_sort.index, :].
-                          reset_index(drop=True))
+            self.data = (self.data.loc[basins_sort.index, :].
+                         reset_index(drop=True))
         else:
-            return self._data.loc[basins_sort.index, :].reset_index(drop=True)
+            return self.data.loc[basins_sort.index, :].reset_index(drop=True)
 
     def outlet_basins_regions(self, inplace=False):
         """
@@ -348,7 +351,7 @@ class GeoData:
             data.loc[upbasins, 'parreg'] = regions[i]
         data.reset_index(inplace=True)
         if inplace:
-            self._data = data
+            self.data = data
         else:
             return data
 
@@ -357,9 +360,9 @@ class GeoData:
         Returns the GeoData as a DataFrame
         """
         if columns is None:
-            return self._data.copy()
+            return self.data.copy()
         else:
-            return self._data.loc[:, columns]
+            return self.data.loc[:, columns]
 
     def save_table(self, filename):
         """
@@ -367,15 +370,15 @@ class GeoData:
         Index is ignored
         """
         if filename.endswith('.csv'):
-            self._data.to_csv(filename, sep=',', index=False)
+            self.data.to_csv(filename, sep=',', index=False)
         else:
-            self._data.to_csv(filename, sep='\t', index=False)
+            self.data.to_csv(filename, sep='\t', index=False)
 
     def remove_geodataclass(self):
         """Removes all the soil-land percentajes from the GeoData"""
-        columns = [x for x in self._data.columns if str(x).startswith('slc_')]
+        columns = [x for x in self.data.columns if str(x).startswith('slc_')]
         if columns:
-            self._data.drop(labels=columns, axis=1, inplace=True)
+            self.data.drop(labels=columns, axis=1, inplace=True)
 
     def add_geodataclass(self, geodataclass):
         """Add or update the soil-land clasess"""
@@ -392,16 +395,16 @@ class GeoData:
         self.remove_geodataclass()
         # Add new geoclass
         if 'subid' in geodataclass:
-            self._data = self._data.merge(geodataclass, how='left', on='subid')
+            self.data = self.data.merge(geodataclass, how='left', on='subid')
         else:
-            self._data = self._data.merge(geodataclass, how='left',
-                                          left_on='subid', right_index=True)
+            self.data = self.data.merge(geodataclass, how='left',
+                                        left_on='subid', right_index=True)
 
     def check_geodataclass(self):
         """Check that soil-land percents sums 1 to avoid problems with HYPE"""
-        columns = [x for x in self._data.columns if str(x).startswith('slc_')]
+        columns = [x for x in self.data.columns if str(x).startswith('slc_')]
         if columns:
-            geodataclass = self._data.loc[:, columns]
+            geodataclass = self.data.loc[:, columns]
             for i in range(geodataclass.shape[0]):
                 mask = geodataclass.iloc[i, :] > 0
 
@@ -413,21 +416,21 @@ class GeoData:
                 diff = 1 - geodataclass.iloc[i, :].sum()
                 geodataclass.iloc[i, _np.where(mask.values)[0][0]] += diff
             geodataclass = geodataclass.round(4)
-            self._data.loc[:, columns] = geodataclass
+            self.data.loc[:, columns] = geodataclass
 
     def get_geodata(self):
         """Returns the geodata without geodataclass as a DataFrame"""
-        columns = [x for x in self._data.columns if not str(x).startswith('slc_')]
-        return self._data.loc[:, columns]
+        columns = [x for x in self.data.columns if not str(x).startswith('slc_')]
+        return self.data.loc[:, columns]
 
     def get_geodataclass(self):
         """Returns the geodataclass as a DataFrame"""
-        columns = [x for x in self._data.columns if str(x).startswith('slc_')]
+        columns = [x for x in self.data.columns if str(x).startswith('slc_')]
         if columns:
             columns = ['subid'] + columns
-            return self._data.loc[:, columns]
+            return self.data.loc[:, columns]
         else:
-            return _pd.DataFrame([], index=self._data['subid'].values)
+            return _pd.DataFrame([], index=self.data['subid'].values)
 
 
 # ==============================================================================

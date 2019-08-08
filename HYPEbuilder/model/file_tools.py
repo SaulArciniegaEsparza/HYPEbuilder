@@ -49,17 +49,17 @@ with open(PAR_TEMPLATE, 'r', encoding='utf-8-sig') as fid:
 # ==============================================================================
 
 class FileInfo(object):
-    """info.txt manager"""
+    """info model manager"""
 
     def __init__(self, filename):
         self.filename = filename
         self.parameters = {}
 
     def __repr__(self):
-        return 'hypeBUILDER.FileInfo'
+        return 'HYPEbuilder.Model.FileInfo'
 
     def __str__(self):
-        return json.dumps(self.parameters, indent=4)
+        return toml.dumps(self.parameters)
 
     def __getitem__(self, key):
         return self.parameters.get(key, None)
@@ -209,7 +209,7 @@ class FileInfo(object):
 # ==============================================================================
 
 class FilePar(object):
-    """par.txt file management"""
+    """Parameters model management"""
 
     def __init__(self, filename):
         self.filename = filename
@@ -218,7 +218,16 @@ class FilePar(object):
         self.general = None
 
     def __repr__(self):
-        return 'hypeBUILDER.FilePar'
+        return 'HYPEbuilder.Model.FilePar'
+
+    def __str__(self):
+        text = '[General]'
+        text += '\n' + str(self.general)
+        text += '\n[Soil]'
+        text += '\n' + str(self.soil)
+        text += '\n[Land]'
+        text += '\n' + str(self.land)
+        return text
 
     def read(self):
         """Reads the par file"""
@@ -242,7 +251,7 @@ class FilePar(object):
                 elif 'general' in line.lower():
                     category = 'general'
             elif not line.startswith('!!') and len(line) > 0:
-                line = re.split('\t| |', re.sub(' +', ' ', line.replace("'", "")))
+                line = re.split('\t| ', re.sub(' +', ' ', line.replace("'", "")))
                 key = line.pop(0)
                 values = [float(x) for x in line]
 
@@ -356,11 +365,19 @@ class FilePar(object):
 # GeoClass class
 # ==============================================================================
 
-class FileGeoclass(object):
+class FileGeoClass(object):
 
     def __init__(self, filename):
         self.filename = filename
         self.data = None
+
+    def __repr__(self):
+        return 'HYPEbuilder.Model.FileGeoClass'
+
+    def __str__(self):
+        text = 'GeoClass\n'
+        text += str(self.data)
+        return text
 
     def read(self, filename=None):
         """Reads a GeoClass file"""

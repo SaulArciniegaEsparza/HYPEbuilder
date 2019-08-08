@@ -59,7 +59,7 @@ class Model(object):
         self.Results = None
 
     def __repr__(self):
-        return('HYPEbuilder')
+        return('HYPEbuilder.Model class')
 
     def new_project(self, folder, geodata, geoclass, geodataclass):
         """Create a new project with some default options"""
@@ -128,7 +128,7 @@ class Model(object):
 
         if self.path:
             filename = _os.path.join(self.path, 'GeoClass.txt')
-            self.GeoClass = file_tools.FileGeoclass(filename)
+            self.GeoClass = file_tools.FileGeoClass(filename)
             self.GeoClass.read(geoclass)
             self.GeoClass.write()
 
@@ -220,18 +220,17 @@ class Model(object):
     def sync_geoclass(self):
         filename = _os.path.join(self.path, 'geoclass.txt')
         if _os.path.exists(filename):
-            self.GeoClass = file_tools.FileGeoclass(filename)
+            self.GeoClass = file_tools.FileGeoClass(filename)
             self.GeoClass.read()
         else:
             print('geodata.txt does not exist in folder!')
 
     def sync(self):
         """Reload files info, geodata, geoclass and parameters"""
-
-        self.Info.sync()
-        self.GeoData.sync()
-        self.GeoClass.sync()
-        self.Parameters.sync()
+        self.sync_info()
+        self.sync_geodata()
+        self.sync_geoclass()
+        self.sync_parameters()
 
     def run_model(self, bdate=None, cdate=None, edate=None):
         """Run HYPE model on folder"""
