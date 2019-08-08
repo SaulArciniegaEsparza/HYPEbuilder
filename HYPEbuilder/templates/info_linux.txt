@@ -1,0 +1,34 @@
+﻿forcingdir	'./forcings/'
+resultdir	'./results/'
+bdate	1990-01-01
+cdate	1991-01-01
+edate	2010-01-01
+steplength	1d
+instate	N
+calibration	N
+regestimate	N
+readoutregion	N
+readdaily	N
+readobsid	N
+submodel	N
+irrrunlimited	N
+soiliniwet	N
+soilstretch	N
+modeloption deepground	0
+modeloption floodmodel	0
+modeloption growthstartmode	0
+modeloption lakeriverice	0
+modeloption petmodel	0
+modeloption snowdensity	0
+modeloption snowevaporation	0
+modeloption snowfallmodel	0
+modeloption snowmeltmodel	0
+modeloption swtemperature	0
+modeloption glacierini	0
+modeloption infiltration	0
+modeloption erosionmodel	0
+modeloption wetlandmodel	0
+modeloption soilleakage	0
+timeoutput	variable	cout	evap	epot	infi
+timeoutput	meanperiod	1
+timeoutput	decimals	3

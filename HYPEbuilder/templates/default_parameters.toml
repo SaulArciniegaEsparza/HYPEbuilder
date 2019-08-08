@@ -1,0 +1,261 @@
+[general]
+    [general.snow]
+        ttpd = 0
+        ttpi = 0
+        sdnsnew = 0
+        snowdensdt = 0
+        sdnsmax = 0
+        sdnsrate = 0
+        sdnsradd = 0
+        pcusnow = 0
+        snowdensd = 0
+    [general.tracer_T1]
+        t1evap = 0
+    [general.soil_temp]
+        deepmen = 0
+    [general.runoff]
+        rrcs3 = 0
+    [general.pet]
+        cevpam = 1
+        cevpph = 0
+        epotdist = 0
+    [genereal.evap]
+        lp = 0
+    [general.rating_curve]
+        gratk = 1
+        gratp = 1
+        grata = 1
+        limqprod = 0
+        krelflood = 0
+        kthrflood = 0
+        klowflood = 0
+    [general.river]
+        rivvel = 1
+        damp = 0
+        deadl = 0
+        deadm = 0
+        maxwidth = 0
+    [general.temp]
+        tcalt = 0
+        tempcorr = 0
+        tcelevadd = 0
+        tcobselev = 0
+    [general.prec]
+        pcaddg = 0
+        pcurain = 0
+        pcluse = 0
+        pcelevadd = 0
+        pcelevth = 0
+        pcelevmax = 0
+        pcelevstd = 0
+        preccorr = 0
+    [general.lake]
+        gldepi = 1
+        qmean = 0
+        laketemp = 0
+    [general.np_river_lake]
+        wprodn = 0
+        wprodp = 0
+        wprodc = 0
+        hsatTP = 0
+    [general.denitrif]
+        hsatINs = 0
+        hsatINw = 0
+        denitwrl = 0
+        denitwrm = 0
+        denitwl = 0
+    [general.np_lake]
+        sedon = 0
+        sedpp = 0
+        limsedON = 0
+        limsedPP = 0
+    [general.np_soil]
+        fastN0 = 0
+        fastP0 = 0
+    [general.tracer_t1]
+        iniT1 = 0
+        iniT1sw = 0
+        iniT2 = 0
+        T1freuc = 0
+        T1rel = 0
+        T1sedexp = 0
+        T1sedvel = 0
+    [general.rural]
+        locsoil = 0
+    [general.deposition]
+        wetdepsp = 0
+        wetdepspl = 0
+        aloadconst = 0
+        ponatm = 0
+    [general.erosion]
+        sreroexp = 0
+        pprelmax = 0
+        pprelexp = 0
+        erodslope = 0
+        erodexp = 0
+        erodindex = 0
+    [general.fertilizer]
+        fertdays = 0
+        litterdays = 0
+    [general.c_soil]
+        klh = 0
+        klo = 0
+        kho = 0
+        kof = 0
+        koflim = 0
+        koc = 0
+        kcgwreg = 0
+        minc = 0
+    [general.c_riparian]
+        ripe = 0
+        rips = 0
+    [general.snow_cover]
+        fscmax = 0
+        fscmin = 0
+        fsclim = 0
+        fsck1 = 0
+        fsckexp = 0
+        fsceff = 0
+        cmrefr = 0
+        fepotsnow = 0
+    [general.irrigation]
+        sswcorr = 0
+        iwdfrac = 0
+        regirr = 0
+        irrdemand = 0
+        immdepth = 0
+        irrcomp = 0
+    [general.glacier]
+        glacdens = 0.85
+        glac2arlim = 0
+        glacvcoef = 0.205
+        glacvexp = 1.375
+        glacvcoef1 = 1.701
+        glacvexp1 = 1.25
+        glaccmlt = 0
+        glacttmp = 0
+        glacannmb = 0
+    [general.aquifer]
+        rcgrw = 1
+    [general.floodplain]
+        optonoff = 1
+        opt1 = 0
+        opt2 = 0
+        opt3 = 0
+        opt4 = 0
+        opt5 = 0
+        opt6 = 0
+        opt7 = 0
+        opt8 = 0
+    [general.sedimentation]
+        sedss = 0
+        limsedss = 0
+        sedae = 0
+    [general.evaporation]
+        fraxe = 1
+        fraxm = 0
+
+[soil]
+    [soil.frost]
+        sfrost = 0
+    [soil.runoff]
+        rrcs1 = 0
+        rrcs2 = 0
+        trrcs = 0
+    [soil.p_soil]
+        freuc = 0
+        freuexp = 0
+        freurate = 0
+    [soil.surface_runoff]
+        srrate = 0
+    [soil.macropore]
+        macrate = 0
+        mactrinf = 0
+        mactrsm = 0
+    [soil.erosion]
+        soilcoh = 0
+        soilerod = 0
+        macrofilt = 0
+    [soil.aquifer]
+        rcgrwst = 0
+    [soil.tracer_t1]
+        T1leaksoil = 0
+    [soil.water_content]
+        mperc1 = 0
+        mperc2 = 0
+        wcfc = 0
+        wcwp = 0
+        wcep = 0
+    [soil.water_content_layers]
+        wcfc1 = 0
+        wcwp1 = 0
+        wcep1 = 0
+        wcfc2 = 0
+        wcwp2 = 0
+        wcep2 = 0
+        wcfc3 = 0
+        wcwp3 = 0
+        wcep3 = 0
+
+[land]
+    [land.snow]
+        cmlt = 0
+        ttmp = 0
+    [land.pet]
+        cevp = 0
+        alb = 0
+        kc = 0
+    [land.frost]
+        frost = 0
+    [land.soil_temp]
+        surfmem = 0
+        depthrel = 0
+    [land.surface_runoff]
+        srrcs = 0
+    [land.denitrif]
+        denitrlu = 0
+        denitrlu3 = 0
+    [land.np_soil]
+        degradhp = 0
+        degradhn = 0
+        minerfn = 0
+        minerfp = 0
+        dissolfp = 0
+        dissolfn = 0
+        dissolhp = 0
+        dissolhn = 0
+        humusN0 = 0
+        humusP0 = 0
+        partP0 =  0
+        occonc0 = 0
+        onconc0 = 0
+        ppconc0 = 0
+        pPhalf = 0
+        hPhalf = 0
+        hNhalf = 0
+    [land.np_perc]
+        onpercred = 0
+        pppercred = 0
+    [land.deposition]
+        drydeppp = 0
+    [land.erosion]
+        innerfilt = 0
+        otherfilt = 0
+        erodluse = 0
+    [land.c_soil]
+        humusc1 = 0
+        fastc1 = 0
+        humusc2 = 0
+        fastc2 = 0
+        humusc3 = 0
+        fastc3 = 0
+        ocsoimsat = 0
+        ocsoimslp = 0
+    [land.c_riparian]
+        ripz = 0
+    [land.tracer_t1]
+        T1leakluse = 0
+    [land.evaporation]
+        ttrig = 0
+        treda = 0
+        tredb = 0

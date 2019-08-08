@@ -1,0 +1,3 @@
+include HYPEbuilder/templates/default_parameters.toml
+include HYPEbuilder/templates/info_linux.txt
+include HYPEbuilder/templates/info_win.txt
