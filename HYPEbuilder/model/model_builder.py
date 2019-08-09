@@ -16,17 +16,13 @@ Mexico City
 
 import sys as _sys
 import os as _os
-import shutil as _shutil
 import subprocess as _sp
-
-from datetime import datetime as _datetime
-
-import numpy as _np
-import pandas as _pd
 
 from . import file_tools
 from ..builder.geodata import GeoData
 from . import time_series
+
+from distutils.dir_util import copy_tree as _copy_tree
 
 FILEPATH = _os.path.dirname(_os.path.abspath(__file__))
 
@@ -59,11 +55,10 @@ class Model(object):
         self.Results = None
 
     def __repr__(self):
-        return('HYPEbuilder.Model class')
+        return 'HYPEbuilder.Model'
 
     def new_project(self, folder, geodata, geoclass, geodataclass):
         """Create a new project with some default options"""
-
         if _os.path.exists(folder):
             raise FileExistsError('Project folder already exist!\nLoad project instead')
 
@@ -94,7 +89,6 @@ class Model(object):
 
     def open_project(self, folder):
         """Open an existing folder project"""
-
         if _os.path.exists(folder):
             self.path = folder
             self.sync_info()
@@ -109,7 +103,6 @@ class Model(object):
 
     def load_geodata(self, geodata):
         """Load geodata information"""
-
         if self.path:
             self.GeoData = GeoData(geodata)
             filename = _os.path.join(self.path, 'GeoData.txt')
@@ -118,14 +111,12 @@ class Model(object):
 
     def load_geodataclass(self, geodataclass):
         """Load soil and land information for basins in GeoData"""
-
         if self.GeoData:
             self.GeoData.add_geodataclass(geodataclass)
             self.GeoData.save_table(self.GeoData.filename)
 
     def load_geoclass(self, geoclass):
         """Load geoclass information"""
-
         if self.path:
             filename = _os.path.join(self.path, 'GeoClass.txt')
             self.GeoClass = file_tools.FileGeoClass(filename)
@@ -134,7 +125,6 @@ class Model(object):
 
     def create_parameters(self):
         """Create a template of parameters"""
-
         if self.path:
             if self.GeoClass:
                 filename = _os.path.join(self.path, 'par.txt')
@@ -171,7 +161,6 @@ class Model(object):
 
     def check_folders(self):
         """Create required folder if they are missing"""
-
         for subfolder in FOLDERS:
             folder = _os.path.join(self.path, subfolder)
             if not _os.path.exists(folder):
@@ -179,10 +168,9 @@ class Model(object):
 
     def build(self):
         """Save all the files loaded by HYPEbuilder class"""
-
         if self.path:
             if self.Info is not None:
-                self.Info.wrtie()
+                self.Info.write()
             if self.GeoData is not None:
                 self.GeoData.save_table(self.GeoData.filename)
             if self.Parameters is not None:
@@ -191,6 +179,7 @@ class Model(object):
                 self.GeoClass.write()
 
     def sync_info(self):
+        """synchronizes data with the info.txt"""
         if self.path:
             filename = _os.path.join(self.path, 'info.txt')
             if _os.path.exists(filename):
@@ -200,6 +189,7 @@ class Model(object):
                 print('info.txt does not exist in folder!')
 
     def sync_parameters(self):
+        """synchronizes data with the par.txt"""
         if self.path:
             filename = _os.path.join(self.path, 'par.txt')
             if _os.path.exists(filename):
@@ -209,6 +199,7 @@ class Model(object):
                 print('par.txt does not exist in folder!')
 
     def sync_geodata(self):
+        """synchronizes data with the GeoData.txt"""
         if self.path:
             filename = _os.path.join(self.path, 'GeoData.txt')
             if _os.path.exists(filename):
@@ -218,6 +209,7 @@ class Model(object):
                 print('GeoData.txt does not exist in folder!')
 
     def sync_geoclass(self):
+        """synchronizes data with the GeoClass.txt"""
         filename = _os.path.join(self.path, 'GeoClass.txt')
         if _os.path.exists(filename):
             self.GeoClass = file_tools.FileGeoClass(filename)
@@ -232,9 +224,18 @@ class Model(object):
         self.sync_geoclass()
         self.sync_parameters()
 
-    def run_model(self, bdate=None, cdate=None, edate=None):
-        """Run HYPE model on folder"""
+    def export_results(self, out_folder):
+        """Exports the results folder to other folder"""
+        if self.path:
+            in_folder = _os.path.join(self.path, 'results')
+            if _os.path.exists(in_folder):
+                if _os.path.exists(out_folder):
+                    raise FileExistsError(f'Folder < {out_folder} > already exist!')
+                else:
+                    _copy_tree(in_folder, out_folder)
 
+    def run_model(self, bdate=None, cdate=None, edate=None):
+        """Run HYPE model"""
         if self.path is None:
             return 1
         if _os.name == 'posix':
@@ -251,13 +252,15 @@ class Model(object):
         self.check_folders()
         self.clean_results()
 
-        if bdate is str:
+        if type(bdate) is str:
             self.Info['bdate'] = bdate
-        if cdate is str:
+        if type(cdate) is str:
             self.Info['cdate'] = cdate
-        if edate is str:
+        if type(edate) is str:
             self.Info['edate'] = edate
-        if bdate or cdate or edate:
+        if (type(bdate) is str or type(cdate) is str
+                or type(edate) is str):
             self.Info.write()
 
         return _sp.call(code, cwd=self.path)
+
