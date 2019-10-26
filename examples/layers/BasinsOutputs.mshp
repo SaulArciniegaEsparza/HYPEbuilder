@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SAGA_METADATA>
+  <DATABASE>
+    <FIELDS>
+      <FIELD TYPE="LONGINT">ID</FIELD>
+      <FIELD TYPE="STRING">Name</FIELD>
+      <FIELD TYPE="LONGINT">X</FIELD>
+      <FIELD TYPE="LONGINT">Y</FIELD>
+    </FIELDS>
+  </DATABASE>
+  <SOURCE>
+    <FILE>/home/zaul/Desktop/HYPE_ejems/GIS/streams_BasinsOutlets.shp</FILE>
+    <DATABASE>
+      <FIELDS>
+        <FIELD TYPE="LONGINT">ID</FIELD>
+        <FIELD TYPE="STRING">Name</FIELD>
+        <FIELD TYPE="LONGINT">X</FIELD>
+        <FIELD TYPE="LONGINT">Y</FIELD>
+      </FIELDS>
+    </DATABASE>
+    <PROJECTION></PROJECTION>
+  </SOURCE>
+  <HISTORY saga-version="2.3.1">
+    <MODULE library="shapes_points" id="0" name="Convert Table to Points">
+      <OPTION type="table_field" id="X" name="X" index="2">X</OPTION>
+      <OPTION type="table_field" id="Y" name="Y" index="3">Y</OPTION>
+      <OPTION type="table_field" id="Z" name="Z" index="-1">&lt;not set&gt;</OPTION>
+      <INPUT type="table" id="TABLE" name="Table">
+        <FILE>/tmp/points.csv</FILE>
+      </INPUT>
+      <OUTPUT type="shapes" id="POINTS" name="Points">points</OUTPUT>
+    </MODULE>
+  </HISTORY>
+  <FILE>D:\SAUL\HYPE_ejems\GIS\streams_BasinsOutlets.shp</FILE>
+  <DESCRIPTION></DESCRIPTION>
+</SAGA_METADATA>

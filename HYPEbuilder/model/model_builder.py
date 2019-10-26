@@ -159,6 +159,13 @@ class Model(object):
             for file in _os.listdir(folder):
                 _os.remove(_os.path.join(folder, file))
 
+    def clean_log(self):
+        """Deletes hyss... and test... files from model folder"""
+        if self.path:
+            for name in _os.listdir(self.path):
+                if 'hyss' in name or 'tests' in name:
+                    _os.remove(_os.path.join(self.path, name))
+
     def check_folders(self):
         """Create required folder if they are missing"""
         for subfolder in FOLDERS:

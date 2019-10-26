@@ -11,12 +11,12 @@ readoutregion	N
 readdaily	N
 readobsid	N
 submodel	N
-irrrunlimited	N
+irrunlimited	N
 soiliniwet	N
 soilstretch	N
 modeloption deepground	0
 modeloption floodmodel	0
-modeloption growthstartmode	0
+modeloption growthstartmodel	0
 modeloption lakeriverice	0
 modeloption petmodel	0
 modeloption snowdensity	0
