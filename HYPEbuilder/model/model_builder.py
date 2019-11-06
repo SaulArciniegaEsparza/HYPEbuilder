@@ -18,6 +18,9 @@ import sys as _sys
 import os as _os
 import subprocess as _sp
 
+import numpy as _np
+import pandas as _pd
+
 from . import file_tools
 from ..builder.geodata import GeoData
 from . import time_series
@@ -25,6 +28,9 @@ from . import time_series
 from distutils.dir_util import copy_tree as _copy_tree
 
 FILEPATH = _os.path.dirname(_os.path.abspath(__file__))
+
+CLASS1 = type(_pd.Series())
+CLASS2 = type(_pd.DataFrame())
 
 
 # ==============================================================================
@@ -52,6 +58,7 @@ class Model(object):
         self.Parameters = None
         self.Info = None
         self.Forcings = None
+        self.BranchData = None
         self.Results = None
 
     def __repr__(self):
@@ -91,10 +98,7 @@ class Model(object):
         """Open an existing folder project"""
         if _os.path.exists(folder):
             self.path = folder
-            self.sync_info()
-            self.sync_parameters()
-            self.sync_geodata()
-            self.sync_geoclass()
+            self.sync()
             self.Forcings = time_series.Forcings(folder)
             self.Results = time_series.Results(folder)
             print(f'Project < {folder} > successfully loaded')
@@ -122,6 +126,58 @@ class Model(object):
             self.GeoClass = file_tools.FileGeoClass(filename)
             self.GeoClass.read(geoclass)
             self.GeoClass.write()
+
+    def load_brachdata(self, brachdata):
+        """Load branchdata information"""
+        if self.path:
+            filename = _os.path.join(self.path, 'BranchData.txt')
+            self.BranchData = file_tools.FileBrachData(filename)
+            self.BranchData.read(brachdata)
+            self.BranchData.write()
+
+    def partial_model_setup(self, subids=None, file=None, clean=False):
+        """
+        Create a submodel using subids as list or file.
+        Also disables the submodel simulation.
+
+        Parameters:
+            subids     [list, tuple, array] input basins subids to create a submodel
+            file       [string] input basins subids as file.
+            clean      [bool] if True, subids and file are ignored. If True it removes
+                        the pmsf.txt file and sets submodel as 'N'
+        """
+        if self.path:
+            if clean:
+                filename = _os.path.join(self.path, 'pmsf.txt')
+                if _os.path.exists(filename):
+                    _os.remove(filename)
+                self.Info['submodel'] = 'N'
+                self.Info.write()
+                return
+
+            if subids is None and type(file) is str:
+                subids = _np.genfromtxt(file, dtype=int)
+
+            if type(subids) in (list, tuple, _np.ndarray, CLASS1):
+                if type(subids) is CLASS1:
+                    subids = subids.values
+
+                n = len(subids)
+
+                if n == 0:
+                    raise ValueError('Input subids is empty')
+
+                subids = _np.array(subids, dtype=int)
+                filename = _os.path.join(self.path, 'pmsf.txt')
+                with open(filename, 'w') as fout:
+                    fout.write(f'{n}\n')
+                    for value in subids:
+                        fout.write(f'{value}\t')
+
+                self.Info['submodel'] = 'Y'
+                self.Info.write()
+            else:
+                raise TypeError('Bad subids input type')
 
     def create_parameters(self):
         """Create a template of parameters"""
@@ -184,6 +240,13 @@ class Model(object):
                 self.Parameters.write()
             if self.GeoClass is not None:
                 self.GeoClass.write()
+            if self.BranchData is not None:
+                self.BranchData.write()
+
+    def set_hype_path(self, path):
+        """Set folder path where HYPE excecutable is located"""
+        if _os.path.exists(path):
+            self.hype_path = path
 
     def sync_info(self):
         """synchronizes data with the info.txt"""
@@ -224,12 +287,20 @@ class Model(object):
         else:
             print('GeoClass.txt does not exist in folder!')
 
+    def sync_branchdata(self):
+        """synchronizes data with the BranchData.txt"""
+        filename = _os.path.join(self.path, 'BranchData.txt')
+        self.BranchData = file_tools.FileBrachData(filename)
+        if _os.path.exists(filename):
+            self.BranchData.read()
+
     def sync(self):
         """Reload files info, geodata, geoclass and parameters"""
         self.sync_info()
         self.sync_geodata()
         self.sync_geoclass()
         self.sync_parameters()
+        self.sync_branchdata()
 
     def export_results(self, out_folder):
         """Exports the results folder to other folder"""

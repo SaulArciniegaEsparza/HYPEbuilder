@@ -48,16 +48,16 @@ class Forcings(object):
         self.path = os.path.join(path, 'forcings')
 
     def __repr__(self):
-        return 'hypeBUILDER.Forcings'
+        return 'HYPEbuilder.Forcings'
 
-    def chech_if_path_exist(self):
+    def check_if_path_exist(self):
         if not os.path.exists(self.path):
             os.makedirs(self.path)
 
     def import_obs(self, **kwargs):
         """Import forcing observations to current model"""
 
-        self.chech_if_path_exist()
+        self.check_if_path_exist()
         for key, data in kwargs.items():
             key = key.lower()
             if key in INPUT_OBS:
@@ -70,7 +70,7 @@ class Forcings(object):
                 if type(data) is not CLASS2:
                     raise TypeError(f'Wrong data type for < {key} >')
 
-                data.index.name = 'date'
+                data.index.name = 'DATE'
                 data = data.round(4)
                 data.to_csv(saveas, sep='\t')
 
@@ -98,7 +98,7 @@ class Forcings(object):
 
         # Join DataFrames as Multi Index
         multi_index = pd.MultiIndex.from_tuples(list(zip(index_level_1, index_level_2)),
-                                                names=['date', '0'])
+                                                names=['DATE', '0'])
 
         xobs_data = pd.concat(xobs.values(), axis=1)
         xobs_data.columns = multi_index
@@ -106,7 +106,7 @@ class Forcings(object):
 
         # Write file using first line as comment
         filename = os.path.join(self.path, 'Xobs.txt')
-        self.chech_if_path_exist()
+        self.check_if_path_exist()
 
         with open(filename, 'w') as fout:
             fout.write('! Xobservations\n')
@@ -115,7 +115,7 @@ class Forcings(object):
     def import_xobs_from_multi_index(self, xobs):
 
         filename = os.path.join(self.path, 'Xobs.txt')
-        self.chech_if_path_exist()
+        self.check_if_path_exist()
         if isinstance(xobs.columns, pd.MultiIndex):
             with open(filename, 'w') as fout:
                 fout.write('! Xobservations\n')
@@ -132,9 +132,9 @@ class Forcings(object):
             if os.path.exists(filename):
                 if subid is not None:
                     if type(subid) in (int, float):
-                        subids = ['date'] + [str(int(subid))]
+                        subids = ['DATE'] + [str(int(subid))]
                     elif type(subid) in (tuple, list, np.ndarray):
-                        subids = ['date'] + [str(int(x)) for x in subid]
+                        subids = ['DATE'] + [str(int(x)) for x in subid]
                     else:
                         subids = None
                 else:
@@ -178,19 +178,19 @@ class Results(object):
     def __repr__(self):
         return 'hypeBUILDER.Results'
 
-    def chech_if_path_exist(self):
+    def check_if_path_exist(self):
         if not os.path.exists(self.path):
             os.makedirs(self.path)
 
     def get_time_series(self, variable, subid=None):
 
-        self.chech_if_path_exist()
+        self.check_if_path_exist()
 
         if subid is not None:
-            if type(subid) is int:
-                subid = ['date'] + [str(subid)]
+            if type(subid) in (int, float):
+                subid = ['DATE'] + [str(int(subid))]
             elif type(subid) in (tuple, list, np.ndarray):
-                subid = ['date'] + [str(int(x)) for x in subid]
+                subid = ['DATE'] + [str(int(x)) for x in subid]
             else:
                 subid = None
         else:
@@ -201,7 +201,7 @@ class Results(object):
             data = pd.read_csv(filename, sep='\t', skiprows=1, index_col=[0],
                                parse_dates=[0], usecols=subid)
             data = data.replace(to_replace=-9999, value=np.nan)
-            data.index.name = 'date'
+            data.index.name = 'DATE'
             data.columns = [int(x) for x in data.columns]
             return data
         else:
@@ -209,14 +209,14 @@ class Results(object):
 
     def get_basin_series(self, subid):
 
-        self.chech_if_path_exist()
+        self.check_if_path_exist()
 
         filename = os.path.join(self.path, f'{int(subid):07d}.txt')
         if os.path.exists(filename):
             data = pd.read_csv(filename, sep='\t', skiprows=range(1, 2), index_col=[0],
                                parse_dates=[0])
             data = data.replace(to_replace=-9999, value=np.nan)
-            data.index.name = 'date'
+            data.index.name = 'DATE'
             return data
         else:
             return pd.DataFrame([])

@@ -4,7 +4,7 @@ cdate	1992-01-01
 edate	1995-12-31
 forcingdir	'.\forcings\'
 instate	N
-irrrunlimited	N
+irrunlimited	N
 modeloption	deepground	0
 modeloption	erosionmodel	0
 modeloption	floodmodel	0
@@ -32,4 +32,3 @@ submodel	N
 timeoutput	decimals	3
 timeoutput	meanperiod	1
 timeoutput	variable	cout	evap	epot	infi
-irrunlimited	N

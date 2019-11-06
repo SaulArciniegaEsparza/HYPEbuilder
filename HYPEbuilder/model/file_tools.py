@@ -420,3 +420,115 @@ class FileGeoClass(object):
     def sync(self):
         """Reads the GeoClass.txt"""
         self.read()
+
+
+# ==============================================================================
+# BrachData class
+# ==============================================================================
+
+class FileBrachData(object):
+
+    def __init__(self, filename):
+        self.filename = filename
+        self.data = pd.DataFrame([])
+
+    def create_braches(self, subids=None, file=None):
+        """
+        Create a BrachData using a list of subids or a file list [subid, brach]
+
+        Inputs
+
+        """
+        headers = ['sourceid', 'branchid', 'mainpart', 'maxQmain',
+                   'minQmain', 'maxQbranch', 'Qbranch']
+
+        if type(file) is str:
+            if os.path.exists(file):
+                if file.endswith('.csv'):
+                    data = pd.read_csv(file, sep=',')
+                else:
+                    data = pd.read_csv(file, sep='\t')
+                default = pd.DataFrame(np.zeros((data.shape[0], len(headers))),
+                                       columns=headers)
+                for col in data:
+                    if col.lower() in default:
+                        default[col.lower()] = data[col].values
+
+                self.data = default
+
+            else:
+                raise IOError('File < {file} > does not exist!')
+
+        if type(subids) in (tuple, list, np.ndarray) and file is None:
+            subids = np.array(subids, dtype=int)
+            if subids.ndim != 2:
+                raise ValueError('subids must be a 2D array [subid, branch]')
+
+            default = pd.DataFrame(np.zeros((subids.shape[0], len(headers))),
+                                   columns=headers)
+            default['sourceid'] = subids[:, 0]
+            default['branchid'] = subids[:, 1]
+            default['mainpart'] = 0.5
+
+            self.data = default
+
+    def add_brach(self, sourceid, branchid):
+        headers = ['sourceid', 'branchid', 'mainpart', 'maxQmain',
+                   'minQmain', 'maxQbranch', 'Qbranch']
+
+        if len(self.data) == 0:
+            new = np.zeros((1, len(headers)))
+            self.data = pd.DataFrame(new, columns=headers)
+            self.data.iloc[0, [0, 1]] = [sourceid, branchid]
+        else:
+            new = np.zeros(len(headers))
+            new[:2] = [sourceid, branchid]
+            self.data = self.data.append(new)
+
+    def remove_brach(self, sourceid=None, all=False):
+        if all:
+            self.data = pd.DataFrame([])
+            if os.path.exists(self.filename):
+                os.remove(self.filename)
+        else:
+            if type(sourceid) in (int, float):
+                sourceid = [int(sourceid)]
+            elif type(sourceid) in (tuple, list, np.ndarray):
+                sourceid = np.array(sourceid, dtype=int)
+
+            indexes = []
+            for sid in sourceid:
+                pos = np.where(self.data['sourceid'] == sid)[0]
+                if pos:
+                    indexes.append(pos)
+            self.data.drop(indexes, inplace=True)
+            if len(self.data) == 0:
+                self.data = pd.DataFrame([])
+
+    def read(self, filename=None):
+        if filename is None:
+            filename = self.filename
+
+        if os.path.exists(filename):
+            headers = ['sourceid', 'branchid', 'mainpart', 'maxQmain',
+                       'minQmain', 'maxQbranch', 'Qbranch']
+
+            if filename.endswith('.csv'):
+                data = pd.read_csv(filename, sep=',')
+            else:
+                data = pd.read_csv(filename, sep='\t')
+            default = pd.DataFrame(np.zeros((data.shape[0], len(headers))),
+                                   columns=headers)
+            for col in data:
+                if col.lower() in default:
+                    default[col.lower()] = data[col].values
+
+            self.data = default
+
+    def write(self):
+        if len(self.data) > 0:
+            self.data.to_csv(self.filename, sep='\t', index=False)
+
+    def sync(self):
+        self.read()
+
