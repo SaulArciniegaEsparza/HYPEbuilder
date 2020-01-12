@@ -13,7 +13,8 @@ SAGA_PATH = r'D:\SAUL\DOCUMENTOS\PROGRAMAS\SAGA\saga-6.4.0_x64'
 
 import os
 import geopandas as gpd
-from HYPEbuilder.builder import gis_tools, GeoData
+from HYPEbuilder import gis_tools
+from HYPEbuilder import GeoData
 
 from pysaga import environment as env
 env.set_env(SAGA_PATH)
@@ -138,8 +139,6 @@ soil_land = gis_tools.soil_land_combinations(
         basins['basins'],
         soil['soil'],
         land['land'],
-        soil['soil_rules'],
-        land['land_rules'],
         threshold=5
 )
 

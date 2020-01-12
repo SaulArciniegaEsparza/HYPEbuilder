@@ -979,7 +979,7 @@ def land_reclass(folder, basename, land_grid, land_rules=None, other=None,
     return outputs
 
 
-def soil_land_combinatios(folder, basename, basins, soil, land, threshold=0):
+def soil_land_combinations(folder, basename, basins, soil, land, threshold=0):
     """
     Computes the Soil-Land classes combinations using the soil_texture
     and land_cover grids. This tools creates the GeoClass
@@ -1170,7 +1170,8 @@ def soil_land_combinatios(folder, basename, basins, soil, land, threshold=0):
 
         # second fix
         diff = 1 - slc_by_basin.iloc[i, :].sum()
-        slc_by_basin.iloc[i, _np.where(mask.values)[0][0]] += diff
+        pos = _np.where(mask.values)[0]
+        slc_by_basin.iloc[i, pos[0]] += diff
     slc_by_basin = slc_by_basin.round(4)
     slc_by_basin.to_csv(outputs['geodataclass'])
 
