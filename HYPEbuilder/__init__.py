@@ -20,6 +20,7 @@ __version__ = '0.1'
 # Import modules
 from . import builder as _builder
 from . import model as _model
+from . import utils
 
 from .model.model_builder import Model
 from .builder.geodata import GeoData
