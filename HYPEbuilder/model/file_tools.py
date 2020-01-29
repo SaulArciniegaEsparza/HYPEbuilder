@@ -229,14 +229,17 @@ class FilePar(object):
         text += '\n' + str(self.land)
         return text
 
-    def read(self):
+    def read(self, filename=None):
         """Reads the par file"""
 
-        if not os.path.exists(self.filename):
-            print(f'File < {self.filename} > does not exist')
+        if filename is None:
+            filename = self.filename
+
+        if not os.path.exists(filename):
+            print(f'File < {filename} > does not exist')
             return
 
-        with open(self.filename, 'r', encoding='utf-8-sig') as fid:
+        with open(filename, 'r', encoding='utf-8-sig') as fid:
             text = fid.readlines()
 
         params = dict(soil={}, land={}, general={})
