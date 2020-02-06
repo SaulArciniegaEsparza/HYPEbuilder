@@ -316,8 +316,8 @@ def _kling_gupta_efficiency(obs, sim):
     std = data.std().values
     cc = data.corr().iloc[0, 1]
     part1 = (cc - 1.0) ** 2.0
-    part2 = (mean[1] / std[1] - 1.0) ** 2.0
-    part3 = (mean[0] / std[0] - 1.0) ** 2.0
+    part2 = (std[1] / std[0] - 1.0) ** 2.0
+    part3 = (mean[1] / mean[0] - 1.0) ** 2.0
     return 1 - (part1 + part2 + part3) ** 0.5
 
 

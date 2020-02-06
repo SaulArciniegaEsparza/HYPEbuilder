@@ -50,6 +50,16 @@ class Forcings(object):
     def __repr__(self):
         return 'HYPEbuilder.Forcings'
 
+    @staticmethod
+    def _convert_to_number(data):
+        """
+        Converts columns from DataFrame to numeric format
+        """
+        data1 = data.copy()
+        for col in data.columns:
+            data1.loc[:, col] = pd.to_numeric(data.loc[:, col], errors='coerce')
+        return data1
+
     def check_if_path_exist(self):
         if not os.path.exists(self.path):
             os.makedirs(self.path)
@@ -70,8 +80,9 @@ class Forcings(object):
                 if type(data) is not CLASS2:
                     raise TypeError(f'Wrong data type for < {key} >')
 
+                data = self._convert_to_number(data)
                 data.index.name = 'DATE'
-                data = data.round(4)
+                data = data.round(4).fillna(value=-9999)
                 data.to_csv(saveas, sep='\t')
 
     def import_xobs(self, **kwargs):
@@ -88,6 +99,7 @@ class Forcings(object):
                     data = pd.read_csv(data, sep=',', index_col=[0], parse_dates=[0])
                 else:
                     data = pd.read_csv(data, sep='\t', index_col=[0], parse_dates=[0])
+                data = self._convert_to_number(data)
             if type(data) is not CLASS2:
                 raise TypeError(f'Wrong data type for < {key} >')
 
@@ -110,16 +122,18 @@ class Forcings(object):
 
         with open(filename, 'w') as fout:
             fout.write('! Xobservations\n')
-            xobs_data.to_csv(fout, sep='\t', index_label=False)
+        xobs_data.to_csv(filename, sep='\t', index_label=False, mode='a')
 
     def import_xobs_from_multi_index(self, xobs):
+        """Imports Xobservations to the model from a multi index DataFrame"""
 
         filename = os.path.join(self.path, 'Xobs.txt')
         self.check_if_path_exist()
         if isinstance(xobs.columns, pd.MultiIndex):
             with open(filename, 'w') as fout:
                 fout.write('! Xobservations\n')
-                xobs.round(4).to_csv(fout, sep='\t', index_label=False)
+            xobs_data = xobs_data.fillna(value=-9999)
+            xobs_data.to_csv(filename, sep='\t', index_label=False, mode='a')
         else:
             raise TypeError('Input DataFrame must contain Multi Index columns!')
 
