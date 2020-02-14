@@ -175,8 +175,13 @@ class Forcings(object):
                 return xobs
             else:
                 if type(varname) is str:
-                    return xobs[varname]
+                    data = xobs[varname]
+                    data.columns = [int(x) for x in data.columns]
+                    return data
                 else:
+                    cols = [(x[0], int(x[1])) for x in xobs.columns.to_numpy()]
+                    multi_index = pd.MultiIndex.from_tuples(cols)
+                    xobs.columns = multi_index
                     return xobs
 
 
