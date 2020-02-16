@@ -227,6 +227,21 @@ class FilePar(object):
         text += '\n' + str(self.soil)
         text += '\n[Land]'
         text += '\n' + str(self.land)
+        if 'parreg' in self.__dict__:
+            text += '\n[Parreg]'
+            text += '\n' + str(self.parreg)
+        if 'wqparreg' in self.__dict__:
+            text += '\n[wqparreg]'
+            text += '\n' + str(self.wqparreg)
+        if 'lake' in self.__dict__:
+            text += '\n[Lake]'
+            text += '\n' + str(self.lake)
+        if 'ilake' in self.__dict__:
+            text += '\n[Ilake]'
+            text += '\n' + str(self.ilake)
+        if 'olake' in self.__dict__:
+            text += '\n[Olake]'
+            text += '\n' + str(self.olake)
         return text
 
     def read(self, filename=None):
@@ -253,6 +268,26 @@ class FilePar(object):
                     category = 'land'
                 elif 'general' in line.lower():
                     category = 'general'
+                elif 'parreg' in line.lower():
+                    category = 'parreg'
+                    if category not in params:
+                        params[category] = {}
+                elif 'wqparreg' in line.lower():
+                    category = 'wqparreg'
+                    if category not in params:
+                        params[category] = {}
+                elif 'lake' in line.lower():
+                    category = 'lake'
+                    if category not in params:
+                        params[category] = {}
+                elif 'ilake' in line.lower():
+                    category = 'ilake'
+                    if category not in params:
+                        params[category] = {}
+                elif 'olake' in line.lower():
+                    category = 'olake'
+                    if category not in params:
+                        params[category] = {}
             elif not line.startswith('!!') and len(line) > 0:
                 line = re.split('\t| ', re.sub(' +', ' ', line.replace("'", "")))
                 key = line.pop(0)
@@ -261,7 +296,7 @@ class FilePar(object):
                 params[category][key] = values
 
         for key in params:
-            if key in ('soil', 'land'):
+            if key in ('soil', 'land', 'parreg', 'wqparreg', 'lake', 'ilake', 'olake'):
                 self.__dict__[key] = pd.DataFrame(params[key]).transpose()
                 self.__dict__[key].columns = np.arange(1,
                                                        self.__dict__[key].shape[1]+1,
@@ -273,7 +308,8 @@ class FilePar(object):
         """Writes the parameters file par.txt"""
 
         with open(self.filename, 'w') as fout:
-            for key in ('soil', 'land', 'general'):
+            for key in ('soil', 'land', 'general', 'parreg',
+                        'wqparreg', 'lake', 'ilake', 'olake'):
                 if self.__dict__[key] is not None:
                     if len(self.__dict__[key]) > 0:
                         fout.write(f'!! {key}\n')
@@ -344,7 +380,7 @@ class FilePar(object):
             for key, value in PARAMETERS['land'][category].items():
                 self.add_soil_parameter(key, value)
 
-    def load_geleral_parameters(self, category):
+    def load_general_parameters(self, category):
         """Add the general parameters from a category"""
         category = category.replace(' ', '_').lower()
         if category in PARAMETERS['general']:
