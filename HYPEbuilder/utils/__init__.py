@@ -14,4 +14,7 @@ Mexico City
 """
 
 from . import metrics
+from . import time_series
+from . import optim_tools
+from . import graphics
 

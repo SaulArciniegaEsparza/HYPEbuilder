@@ -10,7 +10,7 @@ Saul Arciniega Esparza
 zaul.ae@gmail.com
 Institute of Engineering of UNAM
 Mexico City
-======
+==============================================================================
 """
 
 import numpy as _np

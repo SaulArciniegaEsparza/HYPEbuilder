@@ -22,3 +22,22 @@ import seaborn as _sns
 
 
 # TODO: Include Time Series Plots and GeoPlots
+
+# ==============================================================================
+# Flow (streamflow, baseflow) plots
+# ==============================================================================
+
+def flow_duration_curve(data, log_scale=True):
+    pass
+
+
+# ==============================================================================
+# GeoData and Geoclass
+# ==============================================================================
+
+def plot_watershed_slc():
+    pass
+
+
+
+
