@@ -172,7 +172,6 @@ class GeoData:
                 upstreams,
                 self.data.loc[:, 'subid'].values
             )
-            print(subid1)
             outdata = self.data.iloc[subid1, :]
         return outdata
 

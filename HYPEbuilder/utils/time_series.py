@@ -195,6 +195,7 @@ def weighted_timeserie(series, basins):
     data = series[basins.iloc[:, 0].values]
     weights = basins.set_index(basins.columns[0])
     weights = weights.iloc[:, 0]
+    weights /= weights.sum()
 
     return (data * weights).sum(axis=1)
 
