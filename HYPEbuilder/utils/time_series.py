@@ -40,9 +40,10 @@ def read_hype_basinserie(filename):
         return _pd.DataFrame([])
 
 
-def read_hype_timeserie(filename, subid=None):
+def read_timeserie_obs(filename, subid=None):
     """
     Reads a multi basin time serie file as a DataFrame.
+    Works for recorded series.
 
     :param filename:     [string] file name
     :param subid:        [int, tuple, list] basin id. If None, all basins are
@@ -61,7 +62,7 @@ def read_hype_timeserie(filename, subid=None):
         else:
             subids = None
         data = _pd.read_csv(filename, sep='\t', index_col=[0], parse_dates=[0],
-                           usecols=subids, skiprows=1)
+                            usecols=subids, skiprows=0)
         data = data.replace(to_replace=-9999, value=_np.nan)
         data.columns = [int(x) for x in data.columns]
         return data
@@ -69,7 +70,37 @@ def read_hype_timeserie(filename, subid=None):
         return _pd.DataFrame([])
 
 
-def read_hype_xobs(varname=None):
+def read_timeserie_simul(filename, subid=None):
+    """
+    Reads a multi basin time serie file as a DataFrame.
+    Works for simulated series.
+
+    :param filename:     [string] file name
+    :param subid:        [int, tuple, list] basin id. If None, all basins are
+                             returned as a DataFrame
+    :return:             [DataFrame]
+    """
+
+    if _os.path.exists(filename):
+        if subid is not None:
+            if type(subid) in (int, float):
+                subids = ['DATE'] + [str(int(subid))]
+            elif type(subid) in (tuple, list, _np.ndarray):
+                subids = ['DATE'] + [str(int(x)) for x in subid]
+            else:
+                subids = None
+        else:
+            subids = None
+        data = _pd.read_csv(filename, sep='\t', index_col=[0], parse_dates=[0],
+                            usecols=subids, skiprows=1)
+        data = data.replace(to_replace=-9999, value=_np.nan)
+        data.columns = [int(x) for x in data.columns]
+        return data
+    else:
+        return _pd.DataFrame([])
+
+
+def read_hype_xobs(filename, varname=None):
     """
     Reads a multi basin and multi variable time serie as a DataFrame
 
