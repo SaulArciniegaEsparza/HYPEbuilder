@@ -73,7 +73,7 @@ def read_optim_timeserie(folder, varname, subid=None):
         if varname in fname.lower():
             sumid = int(_os.path.splitext(fname)[0].split('_')[1])
             filename = _os.path.join(folder, fname)
-            values.append(_ts.read_hype_timeserie(filename, subid=subid))
+            values.append(_ts.read_timeserie_simul(filename, subid=subid))
             keys.append(sumid)
 
     if values:
