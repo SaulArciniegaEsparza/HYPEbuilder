@@ -208,6 +208,37 @@ def melt_timeseries(serie1, serie2, dropna=False):
 
 
 # ==============================================================================
+# Streamflow series
+# ==============================================================================
+
+def flow_duration_curve(data):
+    """
+    Sort data and compute frequency for flow duration curves
+
+    :param data:      [DataFrame] input streamflow data
+    :return:          [DataFrame] flow duration curves
+    """
+
+    # Drop nan values
+    data1 = data.dropna(how='all')
+
+    # Create output data
+    r, c = data1.shape
+    sorted_data = _np.zeros((r, c), dtype=_np.float32)
+    freq = _np.arange(1, r + 1, dtype=_np.float32) / (r + 1)
+
+    # Sort data
+    for i in range(c):
+        d = data1.iloc[:, i].values
+        d = -_np.sort(-d)
+        sorted_data[:, i] = d
+
+    fdc = _pd.DataFrame(sorted_data, index=freq, columns=data.columns)
+    fdc.index.name = 'Freq'
+    return fdc
+
+
+# ==============================================================================
 # SpaceTime series
 # ==============================================================================
 
