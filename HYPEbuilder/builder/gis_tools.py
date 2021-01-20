@@ -469,6 +469,9 @@ def basins_delimitation(folder, basename, outlets, dem, flowdir, slope,
         method=1
     )
 
+    # Clean polygons
+    clean_basins_polygons(outputs['basins'], outputs['basins'])
+
     # Get downslope basin
     print('Getting downstream basisns codes...')
     flowdir_layer = _GridObj(flowdir)
@@ -579,10 +582,13 @@ def basins_delimitation(folder, basename, outlets, dem, flowdir, slope,
     layer2 = _gpd.read_file(temp_file)
     riv_lens = _np.zeros(n)
     for i in range(layer1.shape[0]):
-        riv_lens[i] = (layer1.iloc[i].
-                       geometry.
-                       intersection(layer2.iloc[0].geometry).
-                       length)
+        try:
+            riv_lens[i] = (layer1.iloc[i].
+                           geometry.
+                           intersection(layer2.iloc[0].geometry).
+                           length)
+        except:
+            print("A Topology error was found when computing river length")
     layer1['rivlen'] = riv_lens
 
     # Compute basins centroids
@@ -1292,6 +1298,24 @@ def clean_geoclass(folder, basename, geoclass, geodataclass, threshold=0.03):
     codes.to_csv(outputs['codes'], index=False)
 
     return outputs
+
+
+def clean_basins_polygons(output_layer, input_layer):
+    """
+    Remove mult-iparts to polygons to avoid issues with basins geoprocesing
+
+    :param output_layer:
+    :param input_layer:
+    :return: None
+    """
+    _sp.polygon_parts(output_layer, input_layer, lakes=True)
+    layer = _gpd.read_file(output_layer)
+    col = layer.columns[0]
+    layer["area"] = layer.area
+    layer = layer.sort_values("area", ascending=False)
+    layer = layer.drop_duplicates(subset=col)
+    layer = layer.drop("area", axis=1)
+    layer.to_file(output_layer)
 
 
 # ==============================================================================
